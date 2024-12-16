@@ -8,20 +8,97 @@
 
 Le projet **Plummet Game** est structuré autour de plusieurs classes clés qui interagissent entre elles pour créer l'expérience de jeu. Voici un aperçu des principales classes et de leur hiérarchie :
 
-1. **Player** :
-   - La classe `Player` gère les actions du personnage principal. Elle est responsable des déplacements, des collisions avec les obstacles et de la gestion de la barre d'énergie. Elle peut contenir des méthodes pour déplacer le joueur et détecter les impacts avec les obstacles.
-   
-2. **Obstacle** :
-   - La classe `Obstacle` représente les murs que le joueur rencontre. Ces murs peuvent être détruits lorsque le joueur entre en collision avec eux. La classe gère aussi la logique de destruction des murs.
+PlummetGame (Singleton)
+├── GameManager (Composite)
+│   ├── Player
+│   ├── Obstacle
+│   └── ScoreManager
+└── GameUI (Composite)
+    ├── EnergyBar
+    ├── ScoreDisplay
+    └── Timer
 
-3. **GameManager** :
-   - La classe `GameManager` est le cœur du jeu. Elle coordonne les différentes mécaniques de jeu, comme la gestion des scores, le calcul des collisions et le suivi de l'énergie du joueur. Elle peut également suivre l'état du jeu (en cours, terminé, etc.).
+### Class  A： PlummetGame (Singleton)
 
-4. **EnergyBar** :
-   - La classe `EnergyBar` est responsable de l'affichage et de la gestion de la barre d'énergie du joueur. Elle diminue chaque fois qu'une collision se produit et est utilisée pour informer le joueur du niveau d'énergie restant.
+| Attribut | Fonctions |
+|-----:|---------------|
+|Instance|public static PlummetGame instance|
+|IsGameRunning|public bool getIsGameRunning(), public void setIsGameRunning(bool)|
 
-5. **ScoreManager** :
-   - Cette classe gère le calcul et l'affichage du score à la fin du jeu, en prenant en compte des facteurs comme le nombre de collisions, l'énergie restante et les murs détruits.
+| Méthodes |
+|-----|
+|startGame()|
+|endGame()|
+|restartGame()|
+
+### Class  B： GameManager  (Composite)
+
+| Attribut | Fonctions |
+|-----:|---------------|
+|Player|public Player player|
+|Obstacles|public List<Obstacle> obstacles|
+|Score|public ScoreManager scoreManager|
+|Energy|public float energy|
+|GameTimer|public float timer|
+
+| Méthodes |
+|-----|
+|updateGame()|
+|checkCollisions()|
+|calculateScore()|
+
+### Class  C： Player
+
+| Attribut | Fonctions |
+|-----:|---------------|
+|Position|public Vector3 position, public void setPosition(Vector3)|
+|Speed|public float speed, public void setSpeed(float)|
+|Energy|public float energy, public void setEnergy(float)|
+|IsAlive|public bool isAlive, public void setIsAlive(bool)|
+
+| Méthodes |
+|-----|
+|move()|
+|collideWithObstacle()|
+|decreaseEnergy()|
+
+### Class  D： Obstacle
+
+| Attribut | Fonctions |
+|-----:|---------------|
+|Position|public Vector3 position, public void setPosition(Vector3)|
+|IsDestructible|public bool isDestructible, public void setIsDestructible(bool)|
+
+| Méthodes |
+|-----|
+|destroy()|
+|move()|
+
+### Class  E： ScoreManager
+
+| Attribut | Fonctions |
+|-----:|---------------|
+|Score|public int score, public void setScore(int)|
+
+| Méthodes |
+|-----|
+|increaseScore()|
+|decreaseScore()|
+|resetScore()|
+
+
+### Class  F： GameUI (Composite)
+
+| Attribut | Fonctions |
+|-----:|---------------|
+|EnergyBar|public EnergyBar energyBar|
+|ScoreDisplay|public ScoreDisplay scoreDisplay|
+|Timer|public Timer timer|
+
+| Méthodes |
+|-----|
+|updateUI()|
+|displayGameOver()|
 
 ### Fonctionnement du jeu :
 - Le joueur se déplace de gauche à droite pour atteindre la ligne d'arrivée.
