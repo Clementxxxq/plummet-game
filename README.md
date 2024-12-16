@@ -8,15 +8,15 @@
 
 Le projet **Plummet Game** est structuré autour de plusieurs classes clés qui interagissent entre elles pour créer l'expérience de jeu. Voici un aperçu des principales classes et de leur hiérarchie :
 
-PlummetGame (Singleton)
-├── GameManager (Composite)
-│   ├── Player
-│   ├── Obstacle
-│   └── ScoreManager
-└── GameUI (Composite)
-    ├── EnergyBar
-    ├── ScoreDisplay
-    └── Timer
+    PlummetGame (Singleton)
+    ├── GameManager (Composite)
+    │   ├── Player
+    │   ├── Obstacle
+    │   └── ScoreManager
+    └── GameUI (Composite)
+        ├── EnergyBar
+        ├── ScoreDisplay
+        └── Timer
 
 ### Class  A： PlummetGame (Singleton)
 
