@@ -6,7 +6,7 @@ public class ScoreManager : MonoBehaviour
     public Text scoreText, energyText, collisionText, wallText;
     private int score = 0;
     private float maxEnergy = 1000f;
-    private float currentEnergy;
+    public float currentEnergy;
     private int collisionCount = 0;
     private int remainingWalls = 10;
 
@@ -19,7 +19,6 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(int points)
     {
         score += points;
-        UpdateScore();  // Recalcule le score à chaque ajout de points
         UpdateUI();
     }
 
@@ -27,7 +26,7 @@ public class ScoreManager : MonoBehaviour
     {
         collisionCount++;
         DecreaseEnergy(50);
-        UpdateScore();  // Recalcule le score à chaque collision
+        UpdateScore();
         UpdateUI();
     }
 
@@ -35,7 +34,7 @@ public class ScoreManager : MonoBehaviour
     {
         remainingWalls--;
         if (remainingWalls < 0) remainingWalls = 0;
-        UpdateScore();  // Recalcule le score à chaque mur détruit
+        UpdateScore();
         UpdateUI();
     }
 
@@ -44,12 +43,13 @@ public class ScoreManager : MonoBehaviour
         currentEnergy -= amount;
         if (currentEnergy < 0) currentEnergy = 0;
     }
+
     private void UpdateScore()
     {
-        // Calcul du score selon la formule : (Niveau d’énergie – Nombre de collisions) + Nombre de murs restants
         score = (int)(currentEnergy - collisionCount) + remainingWalls;
     }
-    private void UpdateUI()
+
+    public void UpdateUI()
     {
         scoreText.text = "Score: " + score;
         energyText.text = "Energy: " + currentEnergy + "/" + maxEnergy;
@@ -60,10 +60,20 @@ public class ScoreManager : MonoBehaviour
     public void ResetScore()
     {
         score = 0;
-        collisionCount = 0;
-        remainingWalls = 10;
+    }
+
+    public void ResetEnergy()
+    {
         currentEnergy = maxEnergy;
-        UpdateScore();  // Recalcule le score après réinitialisation
-        UpdateUI();
+    }
+
+    public void ResetCollisions()
+    {
+        collisionCount = 0;
+    }
+
+    public void ResetWalls()
+    {
+        remainingWalls = 10;
     }
 }

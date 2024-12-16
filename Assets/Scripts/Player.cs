@@ -1,29 +1,27 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Vitesse de mouvement du joueur
+    // Variables de mouvement du joueur
     public float speed = 1.5f;
     private Rigidbody2D rigidBody2D;
     private Vector2 movement;
     private PlayerData playerData;
     private bool _isGameOver;
-    
-    // Question 6 : Ajout d'un mode AI  - attribut pour activer le mode AI
 
-    private List<Vector2> path; //chemin de Djikstra
-    private int currentPathIndex; 
-    private float pathRecalculationTime = 1f; //frequence de recalcul du chemin
-    private float lastPathCalculationTime; //duree de calcul du chemin
-    private float stuckCheckTime = 3.5f; //frequence de detection de chemin bloque
-    private float lastStuckCheckTime; //derniere fois ou la detection de chemin bloque a ete faite
-    private Vector2 lastPosition; //derniere position du joueur
-    private int stuckCounter = 0; //nombre de fois ou le chemin est bloque
-    private float backtrackDistance = 2f; // distance de recul pour essayer un nouveau chemin
+    // Question 6 : Ajout d'un mode AI
+    private List<Vector2> path; // Chemin calculé par Djikstra
+    private int currentPathIndex;
+    private float pathRecalculationTime = 1f; // Fréquence de recalcul du chemin
+    private float lastPathCalculationTime; // Dernière fois où le chemin a été calculé
+    private float stuckCheckTime = 3.5f; // Fréquence de détection du blocage
+    private float lastStuckCheckTime; // Dernière fois où la détection de blocage a été effectuée
+    private Vector2 lastPosition; // Dernière position du joueur
+    private int stuckCounter = 0; // Compteur de blocages
+    private float backtrackDistance = 2f; // Distance de recul en cas de blocage
 
-    //Question 4 : Gestion de l'évènement fin du jeu
-    
+    public bool isAIControlled = false;
     void Start()
     {
         _isGameOver = false;
@@ -32,13 +30,9 @@ public class Player : MonoBehaviour
         playerData.plummie_tag = "nraboy";
         path = new List<Vector2>();
         lastPosition = transform.position;
-        // Question 6 : Ajout d'un mode AI  - calcul du chemin
-        // rajouter l'appel de fonction requis
-
-        //Question 4 : Gestion de l'évènement fin du jeu
     }
 
-    //methode qui calcule le chemin a prendre en Mode AI
+    // Méthode qui calcule le chemin à prendre en mode AI
     void CalculatePath()
     {
         if (Time.time - lastPathCalculationTime < pathRecalculationTime)
@@ -46,17 +40,17 @@ public class Player : MonoBehaviour
 
         lastPathCalculationTime = Time.time;
         Vector2 startPos = transform.position;
-        
-        // Add random vertical offset to try different paths
+
+        // Ajouter un offset vertical aléatoire pour tester différents chemins
         float verticalOffset = Random.Range(-2f, 2f);
         Vector2 targetPos = new Vector2(25f, transform.position.y + verticalOffset);
-        
+
         path = Dijkstra.FindPath(startPos, targetPos, stuckCounter);
         currentPathIndex = 0;
-        stuckCounter = 0; // Reset stuck counter when finding new path
+        stuckCounter = 0; // Réinitialiser le compteur de blocages
     }
 
-    //methode pour verifier si le joueur est bloque en mode AI
+    // Méthode pour vérifier si le joueur est bloqué en mode AI
     void CheckIfStuck()
     {
         if (Time.time - lastStuckCheckTime < stuckCheckTime)
@@ -66,7 +60,7 @@ public class Player : MonoBehaviour
         if (distanceMoved < 0.1f && !_isGameOver)
         {
             stuckCounter++;
-            if (stuckCounter > 3) // If stuck for too long
+            if (stuckCounter > 3) // Si bloqué pendant trop longtemps
             {
                 BacktrackAndFindNewPath();
             }
@@ -80,52 +74,39 @@ public class Player : MonoBehaviour
         lastStuckCheckTime = Time.time;
     }
 
-    //retour en arriere et recherche d'un nouveau chemin
+    // Retour en arrière et recherche d'un nouveau chemin
     void BacktrackAndFindNewPath()
     {
-        // le mode AI fait reculer le joueur
         Vector2 backtrackPosition = transform.position;
-        backtrackPosition.x -= backtrackDistance;
+        backtrackPosition.x -= backtrackDistance; // Recule le joueur
         transform.position = backtrackPosition;
 
-        // le chemin actuel est efface et un nouveau chemin est recalcule
         path.Clear();
         currentPathIndex = 0;
-        lastPathCalculationTime = 0f; // met a 0 le delai de temps pour le calcul du chemin
+        lastPathCalculationTime = 0f; // Réinitialiser le délai de calcul du chemin
         CalculatePath();
     }
 
     void Update()
     {
-        //Question 3: Calcul et mise à jour des scores 
+        // Mode AI : le joueur est contrôlé par l'AI
+        if (_isGameOver) return;
 
-        if (!_isGameOver)
+        if (isAIControlled)
         {
-            //introduire le mode AI dans cette fonction
-            //si le jeu est en mode AI alors le AI controlle le mouvement 
-            //sinon le joueur peut controller le mouvement
-
+            UpdateAIMovement();
+            CheckIfStuck();
+        }
+        else
+        {
+            // Contrôle manuel du joueur
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
             movement = new Vector2(h * speed, v * speed);
-
-           
-            //Question 6 - Mode AI
-            /*if (!...)
-            {
-                
-            }
-            else
-            {
-                UpdateAIMovement();
-                CheckIfStuck();
-            }*/
         }
-
-        //Question 5 : Sauvegarde de la progression du jeu 
     }
 
-    //mouvement automatique controlle par le mode AI
+    // Mise à jour du mouvement AI
     void UpdateAIMovement()
     {
         if (path == null || path.Count == 0 || currentPathIndex >= path.Count)
@@ -151,8 +132,7 @@ public class Player : MonoBehaviour
 
         movement = direction.normalized * speed;
     }
-    
-    //verification du progres du joueur
+
     void FixedUpdate()
     {
         if (!_isGameOver)
@@ -161,24 +141,23 @@ public class Player : MonoBehaviour
             rigidBody2D.MovePosition(newPosition);
         }
 
-        if (rigidBody2D.position.x > 24.0f && _isGameOver == false)
+        // Condition de fin du jeu (arrivée à la ligne d'arrivée)
+        if (rigidBody2D.position.x > 24.0f && !_isGameOver)
         {
             _isGameOver = true;
             Debug.Log("Reached the finish line!");
         }
     }
 
-    //methode qui s'execute lorsque il y a collision
+    // Vérification des collisions
     void OnCollisionEnter2D(Collision2D collision)
     {
         playerData.collisions++;
 
-        // Question 6 : Ajout d'un mode AI  - verifie si on est bloque apres une collision
-        // corriger pour faire fonctionner le mode AI
-       /*if (...)
+        if (isAIControlled)
         {
-            stuckCounter++; // incremente le compteur de detection lorsque le joueur est bloque
-            if (stuckCounter > 2) // si il y a trop de collisions alors le jouur est bloque
+            stuckCounter++;
+            if (stuckCounter > 2) // Si trop de collisions, le joueur est bloqué
             {
                 BacktrackAndFindNewPath();
             }
@@ -186,21 +165,6 @@ public class Player : MonoBehaviour
             {
                 CalculatePath();
             }
-        }*/
-    }
-
-    //dessin et coloration des gizmos
-    void OnDrawGizmos()
-    {
-        if (path != null && path.Count > 0)
-        {
-            Gizmos.color = Color.yellow;
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Gizmos.DrawLine(path[i], path[i + 1]);
-            }
         }
     }
-
-    //Question 4 : Gestion de l'évènement fin du jeu
 }
