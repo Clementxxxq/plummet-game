@@ -11,7 +11,8 @@ public class PlayerData
     public int collisions;
     public int steps;
 
-    public string Stringify() {
+    public string Stringify()
+    {
         return JsonUtility.ToJson(this);
     }
 
@@ -22,12 +23,12 @@ public class PlayerData
 
     public void FetchPlayerData()
     {
-        
+
     }
 
     public void SavePlayerData()
     {
-        
+
     }
 
 }
