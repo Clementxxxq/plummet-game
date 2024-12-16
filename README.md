@@ -87,18 +87,6 @@ Le projet **Plummet Game** est structuré autour de plusieurs classes clés qui 
 |resetScore()|
 
 
-### Class  F： GameUI (Composite)
-
-| Attribut | Fonctions |
-|-----:|---------------|
-|EnergyBar|public EnergyBar energyBar|
-|ScoreDisplay|public ScoreDisplay scoreDisplay|
-|Timer|public Timer timer|
-
-| Méthodes |
-|-----|
-|updateUI()|
-|displayGameOver()|
 
 ### Fonctionnement du jeu :
 - Le joueur se déplace de gauche à droite pour atteindre la ligne d'arrivée.
