@@ -92,3 +92,13 @@ Le projet **Plummet Game** est structuré autour de plusieurs classes clés qui 
 - Le joueur se déplace de gauche à droite pour atteindre la ligne d'arrivée.
 - Il doit éviter ou détruire les obstacles en les heurtant, mais chaque collision réduit sa barre d'énergie.
 - Le **GameManager** gère l'ensemble de la logique, comme la détection des collisions et le calcul du score.
+
+### Système de Score
+
+Le système de score a été ajouté pour suivre la progression du joueur en fonction de son énergie, du nombre de collisions subies et du nombre de murs restants. Le score est calculé selon la formule suivante :
+
+Chaque fois qu'une collision se produit, l'énergie du joueur est réduite de 50 points, le nombre de collisions augmente, et le score est recalculé en fonction de la nouvelle énergie et des murs restants.
+
+Le score, l'énergie, le nombre de collisions et le nombre de murs restants sont affichés en temps réel dans l'interface utilisateur du jeu. Le score est mis à jour à chaque événement (collision, destruction de mur).
+
+
