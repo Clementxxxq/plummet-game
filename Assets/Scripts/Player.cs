@@ -30,6 +30,11 @@ public class Player : MonoBehaviour
         playerData.plummie_tag = "nraboy";
         path = new List<Vector2>();
         lastPosition = transform.position;
+
+        if (isAIControlled)
+        {
+            CalculatePath();
+        }
     }
 
     // Méthode qui calcule le chemin à prendre en mode AI
@@ -164,6 +169,17 @@ public class Player : MonoBehaviour
             else
             {
                 CalculatePath();
+            }
+        }
+    }
+    void OnDrawGizmos()
+    {
+        if (path != null && path.Count > 0)
+        {
+            Gizmos.color = Color.yellow;
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Gizmos.DrawLine(path[i], path[i + 1]);
             }
         }
     }
