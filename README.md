@@ -99,6 +99,11 @@ Le système de score a été ajouté pour suivre la progression du joueur en fon
 
 Chaque fois qu'une collision se produit, l'énergie du joueur est réduite de 50 points, le nombre de collisions augmente, et le score est recalculé en fonction de la nouvelle énergie et des murs restants.
 
+### Gestion de la fin du jeu
+
+L'événement `OnGameOver` est déclenché lorsque l'énergie du joueur atteint 0 ou qu'il franchit la ligne d'arrivée. La fonction `RestartGame()` réinitialise le jeu après la fin.
+
+
 Le score, l'énergie, le nombre de collisions et le nombre de murs restants sont affichés en temps réel dans l'interface utilisateur du jeu. Le score est mis à jour à chaque événement (collision, destruction de mur).
 
 
